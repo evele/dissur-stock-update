@@ -11,7 +11,7 @@ set_time_limit(0);
 require __DIR__ . '/vendor/autoload.php';
 use Automattic\WooCommerce\Client;
 
-define('DO_NOT_UPDATE_PRICE', [3360375004056,
+define('DO_NOT_UPDATE_PRICE', [
   3349668580798,
   3614272889590,
   8433982015106,
@@ -529,17 +529,17 @@ define('DO_NOT_UPDATE_PRICE', [3360375004056,
   8411061999332,
   3423222090920,
   7798336946156,
-  3423473042853.
-  7798336947849.
-  7798336947818.
-  8411061034989.
-  8411061034972.
-  8411061000915.
-  3349668614523.
-  3605521816658.
-  8411061994696.
-  8411061777183.
-  022548423950,
+  3423473042853,
+  7798336947849,
+  7798336947818,
+  8411061034989,
+  8411061034972,
+  8411061000915,
+  3349668614523,
+  3605521816658,
+  8411061994696,
+  8411061777183,
+  22548423950,
   7798336946149,
   7798336948570,
   3349668613861,
@@ -555,9 +555,9 @@ define('DO_NOT_UPDATE_PRICE', [3360375004056,
   7798014758989
 ]);
 
-try {
-
- if(php_sapi_name()!='cli'){
+//try {
+//php_sapi_name()!='cli'
+ if(false){
     // not valid
     echo 'desde acá no pillín';
   } else {
@@ -569,15 +569,25 @@ try {
     $ck_API_woo = 'ck_a4d3d5977643295a39a1543e9bcf5d206e52e567';
     $cs_API_woo = 'cs_14c29d53e0e53ac09185ff42cbabcdb5041eaa00'; */
     /* online ... */
-  
+
+    $url_API_woo = 'http://localhost:80';
+    //$ck_API_woo = 'ck_1c343d40c7aaa86c7ec0e18594cb30a843ec4dfa';
+    //$cs_API_woo = 'cs_1e2ce911bcadbd34f6eecb83f6446ed4cfc657d2';
+
+    $ck_API_woo = 'ck_4e6313650b179b5117ecb0a28e4aa51b33ff21be';
+    $cs_API_woo = 'cs_1980e91a0a8b616b1dd0a475d62d22b7a976e085';
 
     $woocommerce = new Client(
         $url_API_woo,
         $ck_API_woo,
         $cs_API_woo,
-        ['version' => 'wc/v3',
-        'verify_ssl' => true,
-        'timeout' => 400]
+        
+        [
+          //'wp_api' => false,
+          'version' => 'wc/v3',
+          'query_string_auth' => false,
+          'verify_ssl' => false,
+          'timeout' => 400]
     );
 
     $productos = [];
@@ -612,8 +622,8 @@ try {
     if (count($array_of_skus)>0){
       $curl = curl_init();
 
-      $farma_user = "lala_u";
-      $farma_pass = "lala_p";
+      $farma_user = "12572";
+      $farma_pass = "Paula$2024";
       //$params = json_encode(['username' => $farma_user,'password' => $farma_pass,'codigo' => '7793640000747']);
       //$params = json_encode(['username' => $farma_user,'password' => $farma_pass,'codigos' => ['7793640000747','7794640172601']]);
       $params = json_encode(['username' => $farma_user,'password' => $farma_pass,'codigos' => $array_of_skus]);
@@ -677,8 +687,8 @@ try {
           if (! $result) {
             print("❗Error al actualizar productos ".$i."\n");
             write_log("❗Error al actualizar productos ".$i."\n");
-            mail('jsepulveda@xulum.com', 'NUAGES - api update failed', 'sep palmó otra vez, sonamos :( - error al escribir el archivo u alguna otra cosa');
-            mail('inux2012@gmail.com', 'NUAGES - api update failed', 'sep palmó otra vez, sonamos :( - error al escribir el archivo u alguna otra cosa');
+            //mail('jsepulveda@xulum.com', 'NUAGES - api update failed', 'sep palmó otra vez, sonamos :( - error al escribir el archivo u alguna otra cosa');
+            //mail('inux2012@gmail.com', 'NUAGES - api update failed', 'sep palmó otra vez, sonamos :( - error al escribir el archivo u alguna otra cosa');
           } else {
             write_log("✔ Productos actualizados correctamente ".$i."\n");
             print("✔ Productos actualizados correctamente ".$i."\n");
@@ -688,10 +698,10 @@ try {
     }
   } // fin else
 
-} catch (Exception $e) {
-    mail('jsepulveda@xulum.com', 'NUAGES - api update failed error', 'sep palmó otra vez, sonamos :( '.$e);
-    mail('inux2012@gmail.com', 'NUAGES - api update failed error', 'sep palmó otra vez, sonamos :( '.$e);
-}
+/*} catch (Exception $e) {
+   // mail('jsepulveda@xulum.com', 'NUAGES - api update failed error', 'sep palmó otra vez, sonamos :( '.$e);
+    //mail('inux2012@gmail.com', 'NUAGES - api update failed error', 'sep palmó otra vez, sonamos :( '.$e);
+}*/
 
 function map_stock($stock_string) {
   $stock_status = 'outofstock';
