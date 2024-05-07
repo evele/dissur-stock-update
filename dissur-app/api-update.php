@@ -7,7 +7,7 @@ ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 set_time_limit(0);
 
-
+include_once './api-data.php';
 require __DIR__ . '/vendor/autoload.php';
 use Automattic\WooCommerce\Client;
 
@@ -23,7 +23,6 @@ define('DO_NOT_UPDATE_PRICE', [
   8411061978832,
   8411061926918,
   8411061723760,
-  8411061869376,
   8411061978733,
   8411061978900,
   3348901428545,
@@ -152,7 +151,6 @@ define('DO_NOT_UPDATE_PRICE', [
   8411061665022,
   8411061777176,
   8411061081600,
-  8411061869376,
   8411061907559,
   3145891071801,
   3145891054552,
@@ -564,28 +562,17 @@ define('DO_NOT_UPDATE_PRICE', [
 
     // Conexión WooCommerce API destino
     // ================================
-    /* local
-    $url_API_woo = 'http://wordpress-test.com/';
-    $ck_API_woo = 'ck_a4d3d5977643295a39a1543e9bcf5d206e52e567';
-    $cs_API_woo = 'cs_14c29d53e0e53ac09185ff42cbabcdb5041eaa00'; */
-    /* online ... */
-
-    $url_API_woo = 'http://localhost:80';
-    //$ck_API_woo = 'ck_1c343d40c7aaa86c7ec0e18594cb30a843ec4dfa';
-    //$cs_API_woo = 'cs_1e2ce911bcadbd34f6eecb83f6446ed4cfc657d2';
-
-    $ck_API_woo = 'ck_4e6313650b179b5117ecb0a28e4aa51b33ff21be';
-    $cs_API_woo = 'cs_1980e91a0a8b616b1dd0a475d62d22b7a976e085';
-
+   
     $woocommerce = new Client(
-        $url_API_woo,
-        $ck_API_woo,
-        $cs_API_woo,
+        url_API_woo,
+        ck_API_woo,
+        cs_API_woo,
         
         [
-          //'wp_api' => false,
+         //'wp_api' => true,
           'version' => 'wc/v3',
-          'query_string_auth' => false,
+          //'oauth_only' => true,
+          'query_string_auth' => true,
           'verify_ssl' => false,
           'timeout' => 400]
     );
@@ -622,11 +609,9 @@ define('DO_NOT_UPDATE_PRICE', [
     if (count($array_of_skus)>0){
       $curl = curl_init();
 
-      $farma_user = "12572";
-      $farma_pass = "Paula$2024";
       //$params = json_encode(['username' => $farma_user,'password' => $farma_pass,'codigo' => '7793640000747']);
       //$params = json_encode(['username' => $farma_user,'password' => $farma_pass,'codigos' => ['7793640000747','7794640172601']]);
-      $params = json_encode(['username' => $farma_user,'password' => $farma_pass,'codigos' => $array_of_skus]);
+      $params = json_encode(['username' => farma_user,'password' => farma_pass,'codigos' => $array_of_skus]);
 
       curl_setopt_array($curl, array(
         CURLOPT_URL => "https://www.drogueriasur.com.ar/dsapi/articulos/search.json",
@@ -749,7 +734,7 @@ function write_log($text){
 
   $mes = date('Y-m');
   $dia_hora = date('d H:i');
-  $logfile = fopen("/home/xulum/nuages.com.ar/api-update/logs/".$mes."-cron.log", "a") or die("Unable to open file!");
+  $logfile = fopen("logs/".$mes."-cron.log", "a") or die("Unable to open file!");
   fwrite($logfile, $dia_hora.' - '.$text);
   fclose($logfile);
 
