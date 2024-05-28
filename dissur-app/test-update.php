@@ -20,6 +20,8 @@ $values = infoJson();
 define('DO_NOT_UPDATE_PRICE', $values["DO_NOT_UPDATE_PRICE"]);
 $iva = $values["IVA"];
 $ganancia = $values["ganancia"];
+$mail_principal = $values["mail_principal"];
+$mail_secundario = $values["mail_secundario"];
 
 
 //try {
@@ -111,6 +113,10 @@ if(false){
     update_products($items_data_chunks, $conn_woocommerce);
 
   }
+  /*} catch (Exception $e) {
+   // mail($mail_principal, 'Farmacia Ezcurra - api update failed error', 'sep palmó otra vez, sonamos :( '.$e);
+    //mail('inux2012@gmail.com', 'Farmacia Ezcurra - api update failed error', 'sep palmó otra vez, sonamos :( '.$e);
+}*/
 
 
 //----------------------------------------------------------------------------------------------------------------
@@ -283,10 +289,11 @@ function update_products($items_data_chunks, $woocommerce){
       if (! $result) {
         print("❗Error al actualizar productos ".$i."\n");
         write_log("❗Error al actualizar productos ".$i."\n");
-        mail('jsepulveda@xulum.com', 'NUAGES - api update failed', 'sep palmó otra vez, sonamos :( - error al escribir el archivo u alguna otra cosa');
-        mail('inux2012@gmail.com', 'NUAGES - api update failed', 'sep palmó otra vez, sonamos :( - error al escribir el archivo u alguna otra cosa');
+        mail($mail_principal, 'Farmacia Ezcurra - api update failed', 'sep palmó otra vez, sonamos :( - error al escribir el archivo u alguna otra cosa');
+        mail($mail_secundario, 'Farmacia Ezcurra - api update failed', 'sep palmó otra vez, sonamos :( - error al escribir el archivo u alguna otra cosa');
       } else {
-        mail('grossoanalaura@gmail.com', 'NUAGES - api update failed', 'sep palmó otra vez, sonamos :( - error al escribir el archivo u alguna otra cosa');
+        mail($mail_principal, 'Farmacia Ezcurra - api update WORKED', 'Mails funcionando');
+        mail($mail_secundario, 'Farmacia Ezcurra - api update WORKED', 'Mails funcionando');
         write_log("✔ Productos actualizados correctamente ".$i."\n");
         print("✔ Productos actualizados correctamente ".$i."\n");
       }
@@ -303,97 +310,3 @@ function write_log($text){
   fclose($logfile);
 }
 
-/*
------------PRODUCTOS DROGUERÍA -------------
-array(1) { ["res"]=> array(2) { 
-  [0]=> array(13) 
-    { ["stock"]=> string(1) "S" 
-      ["descripcion"]=> string(27) "TOMMY H.TOMMY MEN 100ml EDT" 
-      ["categoria"]=> int(5) 
-      ["troquel"]=> string(5) "24324" 
-      ["codigo_barras"]=> string(11) "22548024324" 
-      ["codigo_barras2"]=> string(12) "022548024324" 
-      ["codigo_barras3"]=> string(12) "022548024324" 
-      ["trazable"]=> bool(false) 
-      ["msd"]=> bool(false) 
-      ["iva"]=> bool(true) 
-      ["pack"]=> bool(false) 
-      "cadena_frio"]=> bool(false) 
-      ["precio_farmacia"]=> string(8) "91780.86" 
-    } 
-  [1]=> array(13) 
-    { ["stock"]=> string(1) "S" 
-      ["descripcion"]=> string(29) "C.HERRERA 212 VIP BLACK.M 100" 
-      ["categoria"]=> int(5) 
-      ["troquel"]=> string(5) "69376" 
-      ["codigo_barras"]=> string(13) "8411061043844" 
-      ["codigo_barras2"]=> NULL 
-      ["codigo_barras3"]=> string(13) "8411061869376" 
-      ["trazable"]=> bool(false) 
-      ["msd"]=> bool(false) 
-      ["iva"]=> bool(true) 
-      ["pack"]=> bool(false) 
-      ["cadena_frio"]=> bool(false) 
-      ["precio_farmacia"]=> string(8) "82408.54" 
-    } } } */
-
-/*
-["stock_status"]=> string(10) "outofstock"
-
-
-array(3) { [0]=> object(stdClass)#10 (69) { ["id"]=> int(15) 
-                                            ["name"]=> string(4) "Otro" 
-                                            ["slug"]=> string(4) "otro" 
-                                            ["permalink"]=> string(30) "http://localhost/product/otro/" 
-                                            ["date_created"]=> string(19) "2024-05-15T20:56:01" 
-                                            ["date_created_gmt"]=> string(19) "2024-05-15T20:56:01" 
-                                            ["date_modified"]=> string(19) "2024-05-15T21:55:02" 
-                                            ["date_modified_gmt"]=> string(19) "2024-05-15T21:55:02" 
-                                            ["type"]=> string(6) "simple" 
-                                            ["status"]=> string(7) "publish" 
-                                            ["featured"]=> bool(false) 
-                                            ["catalog_visibility"]=> string(7) "visible" 
-                                            ["description"]=> string(0) "" 
-                                            ["short_description"]=> string(0) "" 
-                                            ["sku"]=> string(11) "22548024324" 
-                                            ["price"]=> string(11) "166582.2609" 
-                                            ["regular_price"]=> string(11) "166582.2609" 
-                                            ["sale_price"]=> string(0) "" 
-                                            ["date_on_sale_from"]=> NULL 
-                                            ["date_on_sale_from_gmt"]=> NULL 
-                                            ["date_on_sale_to"]=> NULL 
-                                            ["date_on_sale_to_gmt"]=> NULL 
-                                            ["on_sale"]=> bool(false) 
-                                            ["purchasable"]=> bool(true) 
-                                            ["total_sales"]=> int(0) 
-                                            ["virtual"]=> bool(false) 
-                                            ["downloadable"]=> bool(false) 
-                                            ["downloads"]=> array(0) { } 
-                                            ["download_limit"]=> int(-1) 
-                                            ["download_expiry"]=> int(-1) 
-                                            ["external_url"]=> string(0) "" 
-                                            ["button_text"]=> string(0) "" 
-                                            ["tax_status"]=> string(7) "taxable" 
-                                            ["tax_class"]=> string(0) "" 
-                                            ["manage_stock"]=> bool(false) 
-                                            ["stock_quantity"]=> NULL 
-                                            ["backorders"]=> string(2) "no" 
-                                            ["backorders_allowed"]=> bool(false) 
-                                            ["backordered"]=> bool(false) 
-                                            ["low_stock_amount"]=> NULL 
-                                            ["sold_individually"]=> bool(false) 
-                                            ["weight"]=> string(0) "" 
-                                            ["dimensions"]=> object(stdClass)#11 (3) { ["length"]=> string(0) "" ["width"]=> string(0) "" ["height"]=> string(0) "" } 
-                                            ["shipping_required"]=> bool(true) 
-                                            ["shipping_taxable"]=> bool(true) 
-                                            ["shipping_class"]=> string(0) "" 
-                                            ["shipping_class_id"]=> int(0) 
-                                            ["reviews_allowed"]=> bool(true) 
-                                            ["average_rating"]=> string(4) "0.00" 
-                                            ["rating_count"]=> int(0) 
-                                            ["upsell_ids"]=> array(0) { } 
-                                            ["cross_sell_ids"]=> array(0) { } 
-                                            ["parent_id"]=> int(0) 
-                                            ["purchase_note"]=> string(0) "" 
-                                            ["categories"]=> array(1) { [0]=> object(stdClass)#12 (3) { ["id"]=> int(15) ["name"]=> string(13) "Uncategorized" ["slug"]=> string(13) "uncategorized" } } ["tags"]=> array(0) { } ["images"]=> array(0) { } ["attributes"]=> array(1) { [0]=> object(stdClass)#13 (7) { ["id"]=> int(1) ["name"]=> string(6) "Update" ["slug"]=> string(9) "pa_update" ["position"]=> int(0) ["visible"]=> bool(true) ["variation"]=> bool(false) ["options"]=> array(1) { [0]=> string(1) "1" } } } ["default_attributes"]=> array(0) { } ["variations"]=> array(0) { } ["grouped_products"]=> array(0) { } ["menu_order"]=> int(0) ["price_html"]=> string(139) "$ 166.582,26" ["related_ids"]=> array(2) { [0]=> int(14) [1]=> int(12) } ["meta_data"]=> array(0) { } ["stock_status"]=> string(7) "instock" ["has_options"]=> bool(false) ["post_password"]=> string(0) "" ["_links"]=> object(stdClass)#15 (2) { ["self"]=> array(1) { [0]=> object(stdClass)#14 (1) { ["href"]=> string(42) "http://localhost/wp-json/wc/v3/products/15" } } ["collection"]=> array(1) { [0]=> object(stdClass)#16 (1) { ["href"]=> string(39) "http://localhost/wp-json/wc/v3/products" } } } } [1]=> object(stdClass)#17 (69) { ["id"]=> int(14) ["name"]=> string(5) "nuevo" ["slug"]=> string(5) "nuevo" ["permalink"]=> string(31) "http://localhost/product/nuevo/" ["date_created"]=> string(19) "2024-05-15T20:47:06" ["date_created_gmt"]=> string(19) "2024-05-15T20:47:06" ["date_modified"]=> string(19) "2024-05-15T20:54:47" ["date_modified_gmt"]=> string(19) "2024-05-15T20:54:47" ["type"]=> string(6) "simple" ["status"]=> string(7) "publish" ["featured"]=> bool(false) ["catalog_visibility"]=> string(7) "visible" ["description"]=> string(0) "" ["short_description"]=> string(0) "" ["sku"]=> string(13) "3614272642225" ["price"]=> string(3) "110" ["regular_price"]=> string(3) "110" ["sale_price"]=> string(0) "" ["date_on_sale_from"]=> NULL ["date_on_sale_from_gmt"]=> NULL ["date_on_sale_to"]=> NULL ["date_on_sale_to_gmt"]=> NULL ["on_sale"]=> bool(false) ["purchasable"]=> bool(true) ["total_sales"]=> int(0) ["virtual"]=> bool(false) ["downloadable"]=> bool(false) ["downloads"]=> array(0) { } ["download_limit"]=> int(-1) ["download_expiry"]=> int(-1) ["external_url"]=> string(0) "" ["button_text"]=> string(0) "" ["tax_status"]=> string(7) "taxable" ["tax_class"]=> string(0) "" ["manage_stock"]=> bool(false) ["stock_quantity"]=> NULL ["backorders"]=> string(2) "no" ["backorders_allowed"]=> bool(false) ["backordered"]=> bool(false) ["low_stock_amount"]=> NULL ["sold_individually"]=> bool(false) ["weight"]=> string(0) "" ["dimensions"]=> object(stdClass)#18 (3) { ["length"]=> string(0) "" ["width"]=> string(0) "" ["height"]=> string(0) "" } ["shipping_required"]=> bool(true) ["shipping_taxable"]=> bool(true) ["shipping_class"]=> string(0) "" ["shipping_class_id"]=> int(0) ["reviews_allowed"]=> bool(true) ["average_rating"]=> string(4) "0.00" ["rating_count"]=> int(0) ["upsell_ids"]=> array(0) { } ["cross_sell_ids"]=> array(0) { } ["parent_id"]=> int(0) ["purchase_note"]=> string(0) "" ["categories"]=> array(1) { [0]=> object(stdClass)#19 (3) { ["id"]=> int(15) ["name"]=> string(13) "Uncategorized" ["slug"]=> string(13) "uncategorized" } } ["tags"]=> array(0) { } ["images"]=> array(0) { } ["attributes"]=> array(1) { [0]=> object(stdClass)#20 (7) { ["id"]=> int(1) ["name"]=> string(6) "Update" ["slug"]=> string(9) "pa_update" ["position"]=> int(1) ["visible"]=> bool(true) ["variation"]=> bool(false) ["options"]=> array(1) { [0]=> string(1) "1" } } } ["default_attributes"]=> array(0) { } ["variations"]=> array(0) { } ["grouped_products"]=> array(0) { } ["menu_order"]=> int(0) ["price_html"]=> string(135) "$ 110,00" ["related_ids"]=> array(2) { [0]=> int(15) [1]=> int(12) } ["meta_data"]=> array(0) { } ["stock_status"]=> string(7) "instock" ["has_options"]=> bool(false) ["post_password"]=> string(0) "" ["_links"]=> object(stdClass)#22 (2) { ["self"]=> array(1) { [0]=> object(stdClass)#21 (1) { ["href"]=> string(42) "http://localhost/wp-json/wc/v3/products/14" } } ["collection"]=> array(1) { [0]=> object(stdClass)#23 (1) { ["href"]=> string(39) "http://localhost/wp-json/wc/v3/products" } } } } [2]=> object(stdClass)#24 (69) { ["id"]=> int(12) ["name"]=> string(15) "Algún producto" ["slug"]=> string(14) "algun-producto" ["permalink"]=> string(40) "http://localhost/product/algun-producto/" ["date_created"]=> string(19) "2024-05-03T19:28:18" ["date_created_gmt"]=> string(19) "2024-05-03T19:28:18" ["date_modified"]=> string(19) "2024-05-15T21:55:02" ["date_modified_gmt"]=> string(19) "2024-05-15T21:55:02" ["type"]=> string(6) "simple" ["status"]=> string(7) "publish" ["featured"]=> bool(false) ["catalog_visibility"]=> string(7) "visible" ["description"]=> string(0) "" ["short_description"]=> string(0) "" ["sku"]=> string(13) "8411061869376" ["price"]=> string(11) "149571.5001" ["regular_price"]=> string(11) "149571.5001" ["sale_price"]=> string(0) "" ["date_on_sale_from"]=> NULL ["date_on_sale_from_gmt"]=> NULL ["date_on_sale_to"]=> NULL ["date_on_sale_to_gmt"]=> NULL ["on_sale"]=> bool(false) ["purchasable"]=> bool(true) ["total_sales"]=> int(0) ["virtual"]=> bool(false) ["downloadable"]=> bool(false) ["downloads"]=> array(0) { } ["download_limit"]=> int(-1) ["download_expiry"]=> int(-1) ["external_url"]=> string(0) "" ["button_text"]=> string(0) "" ["tax_status"]=> string(7) "taxable" ["tax_class"]=> string(0) "" ["manage_stock"]=> bool(false) ["stock_quantity"]=> NULL ["backorders"]=> string(2) "no" ["backorders_allowed"]=> bool(false) ["backordered"]=> bool(false) ["low_stock_amount"]=> NULL ["sold_individually"]=> bool(false) ["weight"]=> string(0) "" ["dimensions"]=> object(stdClass)#25 (3) { ["length"]=> string(0) "" ["width"]=> string(0) "" ["height"]=> string(0) "" } ["shipping_required"]=> bool(true) ["shipping_taxable"]=> bool(true) ["shipping_class"]=> string(0) "" ["shipping_class_id"]=> int(0) ["reviews_allowed"]=> bool(true) ["average_rating"]=> string(4) "0.00" ["rating_count"]=> int(0) ["upsell_ids"]=> array(0) { } ["cross_sell_ids"]=> array(0) { } ["parent_id"]=> int(0) ["purchase_note"]=> string(0) "" ["categories"]=> array(1) { [0]=> object(stdClass)#26 (3) { ["id"]=> int(15) ["name"]=> string(13) "Uncategorized" ["slug"]=> string(13) "uncategorized" } } ["tags"]=> array(0) { } ["images"]=> array(0) { } ["attributes"]=> array(1) { [0]=> object(stdClass)#27 (7) { ["id"]=> int(1) ["name"]=> string(6) "Update" ["slug"]=> string(9) "pa_update" ["position"]=> int(0) ["visible"]=> bool(false) ["variation"]=> bool(false) ["options"]=> array(1) { [0]=> string(1) "0" } } } ["default_attributes"]=> array(0) { } ["variations"]=> array(0) { } ["grouped_products"]=> array(0) { } ["menu_order"]=> int(0) ["price_html"]=> string(139) "$ 149.571,50" ["related_ids"]=> array(2) { [0]=> int(14) [1]=> int(15) } ["meta_data"]=> array(0) { } ["stock_status"]=> string(7) "instock" ["has_options"]=> bool(false) ["post_password"]=> string(0) "" ["_links"]=> object(stdClass)#29 (2) { ["self"]=> array(1) { [0]=> object(stdClass)#28 (1) { ["href"]=> string(42) "http://localhost/wp-json/wc/v3/products/12" } } ["collection"]=> array(1) { [0]=> object(stdClass)#30 (1) { ["href"]=> string(39) "http://localhost/wp-json/wc/v3/products" } } } } } 
-                                                */

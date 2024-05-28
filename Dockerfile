@@ -29,6 +29,13 @@ RUN composer install \
 
 FROM wordpress:6.5.2-php8.1-apache
 
+# Instalar msmtp para el envío de correos
+RUN apt-get update && apt-get install -y msmtp msmtp-mta ca-certificates && rm -rf /var/lib/apt/lists/*
+
+# Configurar msmtp
+COPY msmtprc /etc/msmtprc
+RUN chmod 600 /etc/msmtprc && chown www-data /etc/msmtprc
+
 # Copiar las dependencias de Composer desde la etapa de construcción
 COPY --from=composer /app/vendor/ /var/www/html/dissur-app/vendor/
 
@@ -59,6 +66,15 @@ COPY --from=composer /app/vendor/ /var/www/html/dissur-app/vendor/
 # RUN pecl install redis-5.3.7 \
 #    && pecl install xdebug-3.2.1 \
 #    && docker-php-ext-enable redis xdebug
+
+
+# Copiar archivos de la aplicación
+COPY dissur-app /var/www/html/dissur-app
+
+# Configurar sendmail_path en php.ini
+RUN echo "sendmail_path = /usr/bin/msmtp -t" >> /usr/local/etc/php/conf.d/sendmail.ini
+
+
 
 # Use the default production configuration for PHP runtime arguments, see
 # https://github.com/docker-library/docs/tree/master/php#configuration
