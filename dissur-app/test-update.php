@@ -20,10 +20,16 @@ $values = infoJson();
 define('DO_NOT_UPDATE_PRICE', $values["DO_NOT_UPDATE_PRICE"]);
 $iva = $values["IVA"];
 $ganancia = $values["ganancia"];
+<<<<<<< HEAD
 $emails = $values["emails"];
 var_dump($emails);
 //$mail_principal = $values["mail_principal"];
 //$mail_secundario = $values["mail_secundario"];
+=======
+$mail_principal = $values["mail_principal"];
+$mail_secundario = $values["mail_secundario"];
+var_dump("mp", $mail_principal);
+>>>>>>> f03189fbbf087ec9bb2ccff51f6fd87bcfd2a907
 
 
 //try {
@@ -277,8 +283,13 @@ function infoJson(){
 
 function update_products($items_data_chunks, $woocommerce, $mails){
   $i = 1;
+<<<<<<< HEAD
   var_dump("en update");
   var_dump($mails);
+=======
+  global $mail_principal;
+  global $mail_secundario;
+>>>>>>> f03189fbbf087ec9bb2ccff51f6fd87bcfd2a907
   foreach($items_data_chunks as $item_data)
   {
       $data = [
