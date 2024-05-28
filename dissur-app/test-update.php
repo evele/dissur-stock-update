@@ -20,8 +20,10 @@ $values = infoJson();
 define('DO_NOT_UPDATE_PRICE', $values["DO_NOT_UPDATE_PRICE"]);
 $iva = $values["IVA"];
 $ganancia = $values["ganancia"];
-$mail_principal = $values["mail_principal"];
-$mail_secundario = $values["mail_secundario"];
+$emails = $values["emails"];
+var_dump($emails);
+//$mail_principal = $values["mail_principal"];
+//$mail_secundario = $values["mail_secundario"];
 
 
 //try {
@@ -51,9 +53,9 @@ if(false){
     //var_dump( $id_productos_sku_map);
 
     //-------------- acomodar if(res) o (error)
-  // $drogueria_productos = connect_drogueriasur($sku_productos_arr);
+  //$drogueria_productos = connect_drogueriasur($sku_productos_arr);
 
-   $drogueria_productos = array(
+ $drogueria_productos = array(
  
       array(
           "stock" => "S",
@@ -110,7 +112,7 @@ if(false){
     }
     
     $items_data_chunks = array_chunk($items_data,50);
-    update_products($items_data_chunks, $conn_woocommerce);
+    update_products($items_data_chunks, $conn_woocommerce, $emails);
 
   }
   /*} catch (Exception $e) {
@@ -273,8 +275,10 @@ function infoJson(){
   }
 }
 
-function update_products($items_data_chunks, $woocommerce){
+function update_products($items_data_chunks, $woocommerce, $mails){
   $i = 1;
+  var_dump("en update");
+  var_dump($mails);
   foreach($items_data_chunks as $item_data)
   {
       $data = [
@@ -289,11 +293,13 @@ function update_products($items_data_chunks, $woocommerce){
       if (! $result) {
         print("❗Error al actualizar productos ".$i."\n");
         write_log("❗Error al actualizar productos ".$i."\n");
-        mail($mail_principal, 'Farmacia Ezcurra - api update failed', 'sep palmó otra vez, sonamos :( - error al escribir el archivo u alguna otra cosa');
-        mail($mail_secundario, 'Farmacia Ezcurra - api update failed', 'sep palmó otra vez, sonamos :( - error al escribir el archivo u alguna otra cosa');
+        send_mails($mails,'Farmacia Ezcurra - api update failed', 'sep palmó otra vez, sonamos :( - error al escribir el archivo u alguna otra cosa');
+        //mail($mail_principal, 'Farmacia Ezcurra - api update failed', 'sep palmó otra vez, sonamos :( - error al escribir el archivo u alguna otra cosa');
+       // mail($mail_secundario, 'Farmacia Ezcurra - api update failed', 'sep palmó otra vez, sonamos :( - error al escribir el archivo u alguna otra cosa');
       } else {
-        mail($mail_principal, 'Farmacia Ezcurra - api update WORKED', 'Mails funcionando');
-        mail($mail_secundario, 'Farmacia Ezcurra - api update WORKED', 'Mails funcionando');
+        send_mails($mails,'Farmacia Ezcurra - api update WORKED', 'Mails funcionando');
+        //mail($mail_principal, 'Farmacia Ezcurra - api update WORKED', 'Mails funcionando');
+        //mail($mail_secundario, 'Farmacia Ezcurra - api update WORKED', 'Mails funcionando');
         write_log("✔ Productos actualizados correctamente ".$i."\n");
         print("✔ Productos actualizados correctamente ".$i."\n");
       }
@@ -310,3 +316,22 @@ function write_log($text){
   fclose($logfile);
 }
 
+function send_mails($mails, $asunto, $msg){
+  $recipients = array_filter($mails, fn($email) => !empty($email));
+
+if (!empty($recipients)) {
+    $to = implode(',', $recipients); // Convertir el array de destinatarios en una cadena separada por comas
+    $subject = $asunto;
+    $message = $msg;
+    //$headers = "From: remitente@example.com";
+
+    // Enviar el correo
+    if (mail($to, $subject, $message)) {
+        echo "Correo enviado correctamente a: $to";
+    } else {
+        echo "Error al enviar el correo.";
+    }
+} else {
+    echo "No hay destinatarios válidos para enviar el correo.";
+}
+}
