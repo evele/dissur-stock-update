@@ -22,6 +22,7 @@ $iva = $values["IVA"];
 $ganancia = $values["ganancia"];
 $mail_principal = $values["mail_principal"];
 $mail_secundario = $values["mail_secundario"];
+var_dump("mp", $mail_principal);
 
 
 //try {
@@ -275,6 +276,8 @@ function infoJson(){
 
 function update_products($items_data_chunks, $woocommerce){
   $i = 1;
+  global $mail_principal;
+  global $mail_secundario;
   foreach($items_data_chunks as $item_data)
   {
       $data = [
