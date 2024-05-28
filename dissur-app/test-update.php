@@ -21,12 +21,9 @@ define('DO_NOT_UPDATE_PRICE', $values["DO_NOT_UPDATE_PRICE"]);
 $iva = $values["IVA"];
 $ganancia = $values["ganancia"];
 $emails = $values["emails"];
-var_dump($emails);
-//$mail_principal = $values["mail_principal"];
-//$mail_secundario = $values["mail_secundario"];
 
 
-//try {
+try {
 //php_sapi_name()!='cli'
 if(false){
     // not valid
@@ -36,60 +33,29 @@ if(false){
     $conn_woocommerce = connect_woocommerce(url_API_woo, ck_API_woo, cs_API_woo);
     
     $productos = get_products_woocommerce($conn_woocommerce, $productos);
-   // var_dump($productos);
+  
 
     foreach($productos as $p){
       if($p->sku != ""){
-        $i=0;
-        //var_dump($p);
+      
         $sku_productos_arr[] = $p->sku;
         $id_productos_sku_map[$p->sku] = $p->id;
-        //$p->id;
-       // var_dump($p->id);
-        
         $stock_id_productos_map[$p->id] = $p->manage_stock;
       }
     }
-    //var_dump( $id_productos_sku_map);
+    
+    $response_data = connect_drogueriasur($sku_productos_arr);
 
-    //-------------- acomodar if(res) o (error)
-  //$drogueria_productos = connect_drogueriasur($sku_productos_arr);
-
- $drogueria_productos = array(
- 
-      array(
-          "stock" => "S",
-          "descripcion" => "TOMMY H.TOMMY MEN 100ml EDT",
-          "categoria" => 5,
-          "troquel" => "24324",
-          "codigo_barras" => "",
-          "codigo_barras2" => "022548024324",
-          "codigo_barras3" => "022548024324",
-          "trazable" => false,
-          "msd" => false,
-          "iva" => true,
-          "pack" => false,
-          "cadena_frio" => false,
-          "precio_farmacia" => "91780.86"
-        ),
-      array(
-          "stock" => "S",
-          "descripcion" => "C.HERRERA 212 VIP BLACK.M 100",
-          "categoria" => 5,
-          "troquel" => "69376",
-          "codigo_barras" => "8411061043844",
-          "codigo_barras2" => NULL,
-          "codigo_barras3" => "8411061869376",
-          "trazable" => false,
-          "msd" => false,
-          "iva" => true,
-          "pack" => false,
-          "cadena_frio" => false,
-          "precio_farmacia" => "82408.54"
-        )
-      
-    );
-   
+    if (isset($response_data['res'])) {
+      $drogueria_productos = $response_data['res'];
+    } elseif (isset($response_data['error'])) {
+        // Si existe la clave 'error', lanzar una excepción con el mensaje de error
+        throw new Exception("Error: " . $response_data['error']['message']);
+    } else {
+        // Si no existe ni 'res' ni 'error', lanzar una excepción genérica
+        throw new Exception("Respuesta inesperada de la API");
+    }
+  
    
     foreach($sku_productos_arr as $p_woo_sku){
       
@@ -99,7 +65,7 @@ if(false){
           $item_data = ['id' => $id_productos_sku_map[$p_woo_sku] ];
           if (!in_array(floatval($p_woo_sku), DO_NOT_UPDATE_PRICE)) {
             $item_data['regular_price'] = $p_ds['iva']==true?floatval($p_ds['precio_farmacia'])*$iva*$ganancia:floatval($p_ds['precio_farmacia'])*$ganancia; 
-            //$p['iva']==1?floatval($p['precio_farmacia'])*1.7:floatval($p['precio_farmacia'])*1.4;
+          
             
           }
           if (!$stock_id_productos_map[$id_productos_sku_map[$p_woo_sku]]) {
@@ -115,10 +81,10 @@ if(false){
     update_products($items_data_chunks, $conn_woocommerce, $emails);
 
   }
-  /*} catch (Exception $e) {
-   // mail($mail_principal, 'Farmacia Ezcurra - api update failed error', 'sep palmó otra vez, sonamos :( '.$e);
-    //mail('inux2012@gmail.com', 'Farmacia Ezcurra - api update failed error', 'sep palmó otra vez, sonamos :( '.$e);
-}*/
+  } catch (Exception $e) {
+    send_mails($emails,'Farmacia Ezcurra - api update failed error', 'sep palmó otra vez, sonamos :( '.$e);
+   
+}
 
 
 //----------------------------------------------------------------------------------------------------------------
@@ -150,7 +116,7 @@ function get_products_woocommerce($conn){
       $products_in_page_x = $conn->get('products',$parameters);
       $products = array_merge($products_in_page_x,$products);
       $page_full = count($products_in_page_x);
-      //var_dump($productos);
+
       $page_x++;
     }
 
@@ -162,9 +128,7 @@ function connect_drogueriasur($sku_arr){
 
   if (count($sku_arr)>0){
     $curl = curl_init();
-    
-    //$params = json_encode(['username' => $farma_user,'password' => $farma_pass,'codigo' => '7793640000747']);
-    //$params = json_encode(['username' => $farma_user,'password' => $farma_pass,'codigos' => ['7793640000747','7794640172601']]);
+  
     $params = json_encode(['username' => farma_user,'password' => farma_pass,'codigos' => $sku_arr]);
 
     curl_setopt_array($curl, array(
@@ -200,10 +164,10 @@ function get_id($p,$map_sku_id){
 
   if (isset($map_sku_id[floatval($p['codigo_barras'])])){
  
-    // si está el primero asumo que es ese y a la bosta
+ 
     $id = $map_sku_id[floatval($p['codigo_barras'])];
-  } else { //chequeo el siguiente código
-    if ($p['codigo_barras2']!=''){ //chequeo si hay código
+  } else {
+    if ($p['codigo_barras2']!=''){ 
       if (isset($map_sku_id[floatval($p['codigo_barras2'])])){
         $id = $map_sku_id[floatval($p['codigo_barras2'])];
       }
@@ -212,9 +176,9 @@ function get_id($p,$map_sku_id){
         $id = $map_sku_id[floatval($p['codigo_barras3'])];
       }
     }
-  } // en teoría no llegamos con id vacío aca
+  } 
   echo "ID que devuelvo /-/-/-/-/-/-/-/-/-/-/ \r\n";
-  var_dump($id);
+
   return $id;
 
 }
@@ -251,22 +215,13 @@ function infoJson(){
   $data_json = 'data.json';
 
   if (file_exists($data_json)) {
-    // Cargar el contenido del archivo JSON
+
     $json_data = file_get_contents($data_json);
     
-    // Decodificar el contenido JSON en un array asociativo
     $data = json_decode($json_data, true);
     
-    // Verificar si la decodificación fue exitosa
     if ($data !== null) {
-        // Acceder a los valores del array asociativo
         return $data;
-        
-        
-       // echo "IVA: $iva<br>";
-       // echo "Ganancia: $ganancia<br>";
-        
-      
     } else {
         echo "Error al decodificar el archivo JSON.";
     }
@@ -277,8 +232,7 @@ function infoJson(){
 
 function update_products($items_data_chunks, $woocommerce, $mails){
   $i = 1;
-  var_dump("en update");
-  var_dump($mails);
+ 
   foreach($items_data_chunks as $item_data)
   {
       $data = [
@@ -294,12 +248,8 @@ function update_products($items_data_chunks, $woocommerce, $mails){
         print("❗Error al actualizar productos ".$i."\n");
         write_log("❗Error al actualizar productos ".$i."\n");
         send_mails($mails,'Farmacia Ezcurra - api update failed', 'sep palmó otra vez, sonamos :( - error al escribir el archivo u alguna otra cosa');
-        //mail($mail_principal, 'Farmacia Ezcurra - api update failed', 'sep palmó otra vez, sonamos :( - error al escribir el archivo u alguna otra cosa');
-       // mail($mail_secundario, 'Farmacia Ezcurra - api update failed', 'sep palmó otra vez, sonamos :( - error al escribir el archivo u alguna otra cosa');
-      } else {
+       } else {
         send_mails($mails,'Farmacia Ezcurra - api update WORKED', 'Mails funcionando');
-        //mail($mail_principal, 'Farmacia Ezcurra - api update WORKED', 'Mails funcionando');
-        //mail($mail_secundario, 'Farmacia Ezcurra - api update WORKED', 'Mails funcionando');
         write_log("✔ Productos actualizados correctamente ".$i."\n");
         print("✔ Productos actualizados correctamente ".$i."\n");
       }
@@ -320,7 +270,7 @@ function send_mails($mails, $asunto, $msg){
   $recipients = array_filter($mails, fn($email) => !empty($email));
 
 if (!empty($recipients)) {
-    $to = implode(',', $recipients); // Convertir el array de destinatarios en una cadena separada por comas
+    $to = implode(',', $recipients);
     $subject = $asunto;
     $message = $msg;
     //$headers = "From: remitente@example.com";
