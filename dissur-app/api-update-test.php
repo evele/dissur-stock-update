@@ -14,7 +14,7 @@ define('DO_NOT_UPDATE_PRICE', [3337872413728,8429420126252,8429420126251,8429420
 if(!in_array($_SERVER['REMOTE_ADDR'], $whitelist)){
   // not valid
   echo 'desde acá no pillín';
-} else {*/
+} else {
 
   // Conexión WooCommerce API destino
   // ================================
