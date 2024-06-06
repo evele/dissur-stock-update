@@ -25,7 +25,9 @@ $emails = $values["emails"];
 
 try {
 //php_sapi_name()!='cli'
+
 if(php_sapi_name() != 'cli' && strpos( php_sapi_name(), 'cgi') === false){
+
     // not valid
     echo 'desde acá no pillín';
   } else {
