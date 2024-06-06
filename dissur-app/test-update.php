@@ -25,7 +25,9 @@ $emails = $values["emails"];
 
 try {
 //php_sapi_name()!='cli'
-if (php_sapi_name() == 'cli' || strpos( php_sapi_name(), 'cgi' !== false)){
+
+if(php_sapi_name() != 'cli' && strpos( php_sapi_name(), 'cgi') === false){
+
     // not valid
     echo 'desde acá no pillín';
   } else {
@@ -249,7 +251,7 @@ function update_products($items_data_chunks, $woocommerce, $mails){
         write_log("❗Error al actualizar productos ".$i."\n");
         send_mails($mails,'Farmacia Ezcurra - api update failed', 'sep palmó otra vez, sonamos :( - error al escribir el archivo u alguna otra cosa');
        } else {
-        send_mails($mails,'Farmacia Ezcurra - api update WORKED', 'Mails funcionando');
+        //send_mails($mails,'Farmacia Ezcurra - api update WORKED', 'Mails funcionando');
         write_log("✔ Productos actualizados correctamente ".$i."\n");
         print("✔ Productos actualizados correctamente ".$i."\n");
       }
