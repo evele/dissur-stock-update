@@ -38,7 +38,7 @@ if(false){
   
 
     foreach($productos as $p){
-      var_dump("Producto *************************==> ");
+   
     
       if($p->sku != ""){
         
@@ -47,8 +47,8 @@ if(false){
         $stock_id_productos_map[$p->id] = $p->manage_stock;
         
         if(isset($p->attributes) && check_attribute($p->attributes) ){
-          $sku_dont_update[$p->sku] = 
-          var_dump("iiinnn");  
+          $sku_dont_update[$p->sku] = true;
+        
         }
       }
     }
@@ -73,11 +73,16 @@ if(false){
         if($p_woo_sku == $p_ds['codigo_barras'] or $p_woo_sku == $p_ds['codigo_barras2'] or $p_woo_sku == $p_ds['codigo_barras3'] ){
           $item_data = ['id' => $id_productos_sku_map[$p_woo_sku] ];
 
-          if (!in_array(floatval($p_woo_sku), DO_NOT_UPDATE_PRICE)) {
+          if(!isset($sku_dont_update[$p_woo_sku])){
+            $item_data['regular_price'] = $p_ds['iva']==true?floatval($p_ds['precio_farmacia'])*$iva*$ganancia:floatval($p_ds['precio_farmacia'])*$ganancia; 
+          
+          }
+        /* 
+         if (!in_array(floatval($p_woo_sku), DO_NOT_UPDATE_PRICE)) {
             $item_data['regular_price'] = $p_ds['iva']==true?floatval($p_ds['precio_farmacia'])*$iva*$ganancia:floatval($p_ds['precio_farmacia'])*$ganancia; 
           
             
-          }
+          }*/
           if (!$stock_id_productos_map[$id_productos_sku_map[$p_woo_sku]]) {
             $item_data['stock_status'] = map_stock($p_ds['stock']);
           }
