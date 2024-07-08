@@ -46,13 +46,14 @@ if(false){
         $id_productos_sku_map[$p->sku] = $p->id;
         $stock_id_productos_map[$p->id] = $p->manage_stock;
         
-        if(isset($p->attributes) && check_attribute($p->attributes) ){
+       if(isset($p->attributes) && check_attribute($p->attributes) ){
           $sku_dont_update[$p->sku] = true;
         
         }
       }
     }
-    
+    echo "Hola";
+
     $response_data = connect_drogueriasur($sku_productos_arr);
 
     if (isset($response_data['res'])) {
@@ -73,12 +74,12 @@ if(false){
         if($p_woo_sku == $p_ds['codigo_barras'] or $p_woo_sku == $p_ds['codigo_barras2'] or $p_woo_sku == $p_ds['codigo_barras3'] ){
           $item_data = ['id' => $id_productos_sku_map[$p_woo_sku] ];
 
-          if(!isset($sku_dont_update[$p_woo_sku])){
+         if(!isset($sku_dont_update[$p_woo_sku])){
             $item_data['regular_price'] = $p_ds['iva']==true?floatval($p_ds['precio_farmacia'])*$iva*$ganancia:floatval($p_ds['precio_farmacia'])*$ganancia; 
           
           }
-        /* 
-         if (!in_array(floatval($p_woo_sku), DO_NOT_UPDATE_PRICE)) {
+        
+         /*if (!in_array(floatval($p_woo_sku), DO_NOT_UPDATE_PRICE)) {
             $item_data['regular_price'] = $p_ds['iva']==true?floatval($p_ds['precio_farmacia'])*$iva*$ganancia:floatval($p_ds['precio_farmacia'])*$ganancia; 
           
             
@@ -303,8 +304,13 @@ if (!empty($recipients)) {
 
 function check_attribute($attributes_arr) {
   foreach ($attributes_arr as $attribute) {
-      if (isset($attribute->name) && $attribute->name === 'Update') {
-          return true;
+    //&& $attribute->options === 'NO ACTUALIZAR'  
+      if (isset($attribute->name) && ($attribute->name === 'Update' )) {
+        if(in_array("NO ACTUALIZAR", $attribute->options)){
+          var_dump($attribute);
+          echo "No actualizar";
+            return true;
+        }
       }
   }
   return false;
